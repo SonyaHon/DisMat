@@ -1,0 +1,47 @@
+#include <iostream>
+#include <fstream>
+#include <string.h>
+
+int main(int argc, char **argv) {
+	if(argc < 2) {
+		puts("No file attached.");
+		exit(0);
+	}
+	std::string fileName = argv[1];
+	std::ifstream file(fileName);
+	int n;
+	int m;
+	file >> n >> m;
+
+	int matrix[n][m];
+
+	for(int i = 0; i < n; ++i) {
+		for(int j = 0; j < m; ++j) {
+			file >> matrix[i][j];
+			//std::cout << matrix[i][j] << " ";
+		}
+
+		//std::cout << std::endl;
+	}
+
+	std::ofstream newFile("HelloWorld.txt");
+
+	for(int edge = 0; edge < m; ++edge) {
+		for(int vert = 0; vert < n; ++vert) {
+			if(matrix[vert][edge] == -1) {
+				newFile << "s(e" << edge << ") = v" << vert << "\n";
+				std::cout << "s(e" << edge << ") = v" << vert << "\n";
+			}
+			else if (matrix[vert][edge] == 1) {
+				newFile << "t(e" << edge << ") = v" << vert << "\n";
+				std::cout << "t(e" << edge << ") = v" << vert << "\n";
+			}
+		}
+	}
+
+
+
+	file.close();
+	newFile.close();
+	return 0;
+}
