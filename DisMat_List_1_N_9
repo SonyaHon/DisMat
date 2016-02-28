@@ -1,0 +1,68 @@
+#include <iostream>
+#include <string.h>
+#include <fstream>
+#include <map>
+
+int parserE(std::string);
+int parserV(std::string);
+
+int main(int argc, char ** argv) {
+
+	if(argc < 2) {
+		puts("No file name attached.");
+		exit(0);
+	}
+	std::string fileName = argv[1];
+	std::ifstream file(fileName);
+	std::string str;
+	std::map<int, int> graph;
+	if(file.is_open()) {
+		while(file >> str) {
+			if(str[0] == 't') {
+				if(graph[parserV(str)]) {
+					graph[parserV(str)] += 1;
+				}
+				else{
+					graph[parserV(str)] = 1;
+				}
+			}
+		}
+	}
+
+	int max = 0;
+	for(auto it = graph.begin(); it != graph.end(); ++it) {
+		if((*it).second > max) {
+			max = (*it).second;
+		}
+	}
+
+	for(auto it = graph.begin(); it != graph.end(); ++it) {
+		if((*it).second == max) {
+			std::cout << "Vertex: " << (*it).first << "!" << std::endl;
+		}
+	}
+
+	file.close();
+	return 0;
+}
+
+int parserE(std::string str) {
+	int result = 0;
+	for(int i = 2; i < str.length() && str[i] != ','; ++i) {
+		result *= 10;
+		result += ((int)str[i] - 48);
+	}
+	return result;
+}
+
+int parserV(std::string str) {
+	int result = 0;
+	int i = 2;
+	for(;str[i] != ','; ++i){}
+	++i;
+	for(; i < str.length(); ++i) {
+		result *= 10;
+		result += ((int)str[i] - 48);
+	}
+	return result;
+}
