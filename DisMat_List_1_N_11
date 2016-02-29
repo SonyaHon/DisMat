@@ -1,0 +1,129 @@
+#include <iostream>
+#include <fstream>
+#include <string.h>
+#include <queue>
+#include <vector>
+
+
+std::queue<int> vertsToSee;
+std::vector<bool> seenVerts;
+
+
+int vertsAmount;
+int preVert;
+
+class Edge {
+public:
+	int edge;
+	int vert1;
+	int vert2;
+
+	Edge() {
+		edge = -1;
+		vert1 = -1;
+		vert2 = -1;
+	}
+};
+
+int foo(int vert, std::vector<std::vector<int> > verts);
+
+int main(int argc, char ** argv) {
+	if(argc < 2) {
+		puts("No file attached.");
+		exit(0);
+	}
+
+	std::string fileName = argv[1];
+	std::ifstream file(fileName);
+	if(!file.is_open()) {
+		perror("File openning error. ");
+		exit(1);
+	}
+
+	file >> vertsAmount;
+	seenVerts.reserve(vertsAmount);
+
+	for(size_t i = 0; i < vertsAmount; ++i) {
+		seenVerts[i] = false;
+	}
+
+	char sign;
+	int edge;
+	int res;
+
+	preVert = -1;
+
+	std::vector<Edge> edges;
+
+	while(file >> sign >> edge >> res) {
+		if(sign == 't') {
+			Edge e = Edge();
+			e.vert2 = res;
+			e.edge = edge;
+			edges.reserve(edges.size() + 1);
+			edges.push_back(e);
+		}
+		else if(sign == 'i') {
+			edges[edge - 1].vert1 = edges[res - 1].vert2;
+		}
+	}
+
+	for(size_t i = 0 ; i < edges.size(); ++i) {
+		if(edges[i].vert1 == -1) {
+			edges.erase(edges.begin() + i);
+			edges.shrink_to_fit();
+		}
+ 	}
+
+	std::vector<std::vector<int> > verts(vertsAmount);
+
+	for(size_t i = 0; i < verts.size(); ++i) {
+		for(size_t j = 0; j < edges.size(); ++j) {
+			if(edges[j].vert1 - 1 == i) {
+				verts[i].push_back(edges[j].vert2 - 1);
+			}
+			else if(edges[j].vert2 - 1 == i) {
+				verts[i].push_back(edges[j].vert1 - 1);
+			}
+		}
+	}
+
+	bool isCycle = true;
+	bool flag = false;
+
+	vertsToSee.push(0);
+
+	while(isCycle && !vertsToSee.empty()) {
+		int j = foo(vertsToSee.front(), verts);
+		preVert = vertsToSee.front();
+		vertsToSee.pop();
+		if(j == 1) {
+			flag = true;
+			break;
+		}
+	}
+
+	if(flag) {
+		puts("Graph is cycled");
+	}
+	else {
+		puts("Graph is not cycled");
+	}
+
+	return 0;
+}
+
+int foo(int vert, std::vector<std::vector<int> > verts) {
+	if(seenVerts[vert] == true && vert != preVert) {
+		return 1; // Graph is cycled
+	}
+	else if (seenVerts[vert] == false) {
+		for(size_t i = 0; i < verts[vert].size(); ++i) {
+			if(verts[vert][i] != preVert) vertsToSee.push(verts[vert][i]);
+		}
+		seenVerts[vert] = true;
+		return -1;
+	}
+
+	return 0;
+}
