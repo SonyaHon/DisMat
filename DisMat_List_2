@@ -1,0 +1,102 @@
+#include <fstream>
+#include <iostream>
+#include <queue>
+#include <vector>
+
+std::vector<bool> seenVerts;
+std::queue<int> vertsToDo;
+
+void proccesVert(int, std::vector<std::vector<int> >);
+int superProcc(std::vector<std::vector<int> >);
+
+int main(int argc, char **argv) {
+
+	std::ifstream file("file.txt");
+	if(file == 0) {
+		perror("No file");
+		exit(0);
+	}
+
+	int vertexNumber;
+	file >> vertexNumber;
+
+	std::vector<std::vector<int> > V(vertexNumber);
+
+	int l;
+	file >> l;
+
+	for(int i = 0; i < vertexNumber; ++i) {
+		seenVerts.push_back(false);
+	}
+
+	int vert1, vert2;
+
+	while(file >> vert1 >> vert2) {
+		V[vert1].push_back(vert2);
+	}
+
+	vertsToDo.push(0);
+
+	while(!vertsToDo.empty()) {
+
+		proccesVert(vertsToDo.front(), V);
+		vertsToDo.pop();
+	}
+
+	int ok = 0;
+	for(int i = 0; i < seenVerts.size(); ++i) {
+
+		if(seenVerts[i] == true) {
+			ok++;
+		}
+	}
+
+	if(ok == seenVerts.size()) {
+		puts("YES, 1");
+	}
+	else {
+		std::cout << "NO, " << superProcc(V) << std::endl;
+	}
+
+	return 0;
+}
+
+int superProcc(std::vector<std::vector<int> > V) {
+	int clas = 2;
+	int lastVert;
+
+	for(int i = 0; i < seenVerts.size(); ++i) {
+		if(seenVerts[i] == false) lastVert = i;
+	}
+
+	vertsToDo.push(lastVert);
+
+	while(!vertsToDo.empty()) {
+		proccesVert(vertsToDo.front(), V);
+		vertsToDo.pop();
+	}
+
+	int i = 0;
+	for(; i < seenVerts.size(); ++i) {
+		if(seenVerts[i] == false) break;
+	}
+	if(i != seenVerts.size()) {
+		return clas + superProcc(V) - 1;
+	}
+
+	return clas;
+}
+
+void proccesVert(int vert, std::vector<std::vector<int> > V) {
+
+	if(seenVerts[vert] == true) {
+		return;
+	}
+
+	seenVerts[vert] = true;
+
+	for(int i = 0; i < V[vert].size(); ++i) {
+		vertsToDo.push(V[vert][i]);
+	}
+
+}
