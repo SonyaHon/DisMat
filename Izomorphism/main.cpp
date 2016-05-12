@@ -31,9 +31,7 @@ struct Graph {
 	std::vector<bool> seenVerts;
 
 	int nodesNumber; //rdy
-	int edgesNumber; //rdy
 	int rComponent; // rdy
-	int determinant; // rdy
 	int chromaticNumber;
 	Vector2 pass;
 
@@ -42,7 +40,6 @@ struct Graph {
 		std::ifstream file(filename);
 
 		file >> nodesNumber;
-		file >> edgesNumber;
 
 		nodes.reserve(nodesNumber);
 
@@ -90,13 +87,6 @@ int main(int argc, char **argv) {
 		if(graph1.nodesNumber != graph2.nodesNumber || graph1.edgesNumber != graph2.edgesNumber) {
 			puts("No isomorphism. Amount of nodes and edges is not equal.");
 		    //exit(0);
-		}
-
-	// SECONDD STEP - determinant of matrix
-		
-		if(graph1.determinant != graph2.determinant) {
-			puts("No isomorphism. Determinants are not equal.");
-			//exit(1);
 		}
 
 	// THIRD STEP - rComponent
@@ -268,7 +258,7 @@ int recPart(std::vector<std::vector<int> > &V, std::queue<int> &vertsToDo, std::
 	int lastVert;
 
 	for(size_t i = 0; i < seenVerts.size(); ++i) {
-		if(seenVerts[i] == false) lastVert = i;
+		if(seenVerts[i] == false) lastVert = i;	
 	}
 
 	vertsToDo.push(lastVert);

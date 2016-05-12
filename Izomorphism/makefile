@@ -1,5 +1,7 @@
-all: main.o
-	g++ main.o -o out
+all: main1.o Graph.o
+	g++ main1.o Graph.o -ofast -o out
 	rm *.o
-make.o: main.cpp
-	g++ -c main.cpp
+main1.o: main1.cpp
+	g++ -c main1.cpp
+Graph.o: Graph.cpp
+	g++ -c Graph.cpp
