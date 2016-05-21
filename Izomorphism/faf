@@ -1,0 +1,19 @@
+#!bin/bash
+FILES=./tests/*.in 
+for i in $FILES 
+do
+STARTTIME=$(date +%s)
+./out < $i|
+read -e answer
+ENDTIME=$(date +%s) 
+o=${i/in/out}
+echo $o|
+read -e isGood
+if ["$anser" = "$isGood"]
+then
+echo -e "GOOD"
+else 
+echo -e "BAD AND U KNOW IM JUST A CADILAC  WRUURUURRUU"
+fi
+echo -e "Test: "$i" "$(($ENDTIME - $STARTTIME))" secs"
+done
