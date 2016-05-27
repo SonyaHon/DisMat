@@ -761,10 +761,6 @@ std::queue<int> vertsToCheck;
 
 int main(int argc, char ** argv) {
 
-	float dur;
-	clock_t start, finish;
-	start = clock();
-
 	// Reading graphs
 	int vN;
 	int **matrix1;
@@ -880,12 +876,6 @@ int main(int argc, char ** argv) {
 
 	//Done all.. Finising
 	printf("NO\n");
-
-	finish = clock();
-
-	dur = (float)(finish - start) /  CLOCKS_PER_SEC;
-
-	std::cout << dur << std::endl;
 
 	return 0;
 }
